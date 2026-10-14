@@ -1,0 +1,1302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TECHNULA — NoticeRadar CA Platform Proposal (Commercial Edition)</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Outfit:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <style>
+        :root {
+            --bg-primary: #ffffff;
+            --bg-secondary: #f8fafc;
+            --bg-card: #ffffff;
+            --bg-card-subtle: #f1f5f9;
+            --accent-blue: #2563eb;
+            --accent-blue-light: #eff6ff;
+            --accent-purple: #7c3aed;
+            --accent-purple-light: #f5f3ff;
+            --accent-cyan: #0891b2;
+            --accent-green: #059669;
+            --accent-green-light: #ecfdf5;
+            --accent-orange: #d97706;
+            --accent-orange-light: #fffbeb;
+            --accent-pink: #db2777;
+            --accent-pink-light: #fdf2f8;
+            --accent-red: #dc2626;
+            --text-primary: #0f172a;
+            --text-secondary: #334155;
+            --text-muted: #64748b;
+            --border: #e2e8f0;
+            --border-strong: #cbd5e1;
+            --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.07), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -4px rgba(0, 0, 0, 0.04);
+            --gradient-1: linear-gradient(135deg, #1d4ed8 0%, #6d28d9 100%);
+            --gradient-technula: linear-gradient(135deg, #0284c7 0%, #2563eb 50%, #dc2626 100%);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        @page {
+            size: A4 portrait;
+            margin: 14mm 12mm;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background: #ffffff;
+            color: var(--text-primary);
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
+        }
+
+        /* FLOATING ACTION BAR FOR SCREEN BROWSING */
+        .top-action-bar {
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border);
+            padding: 10px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+        }
+
+        .bar-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-secondary);
+        }
+
+        .bar-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: #ecfdf5;
+            color: #047857;
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-size: 11.5px;
+            font-weight: 700;
+            border: 1px solid #a7f3d0;
+        }
+
+        .bar-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn-action {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 7px 16px;
+            font-size: 12.5px;
+            font-weight: 600;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-decoration: none;
+        }
+
+        .btn-pdf {
+            background: linear-gradient(135deg, #1d4ed8, #2563eb);
+            color: #ffffff;
+            border: 1px solid #1d4ed8;
+            box-shadow: 0 1px 3px rgba(37, 99, 235, 0.2);
+        }
+        .btn-pdf:hover {
+            background: linear-gradient(135deg, #1e40af, #1d4ed8);
+            box-shadow: 0 2px 6px rgba(37, 99, 235, 0.35);
+        }
+
+        .btn-print {
+            background: #ffffff;
+            border: 1px solid var(--border-strong);
+            color: var(--text-primary);
+        }
+        .btn-print:hover {
+            background: #f8fafc;
+            border-color: #94a3b8;
+        }
+
+        .btn-contact {
+            background: var(--accent-blue);
+            color: #ffffff;
+            border: 1px solid var(--accent-blue);
+        }
+        .btn-contact:hover {
+            background: #1d4ed8;
+        }
+
+        /* TOAST NOTIFICATION */
+        .toast-msg {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            background: #0f172a;
+            color: #ffffff;
+            padding: 12px 20px;
+            border-radius: 10px;
+            font-size: 13px;
+            font-weight: 600;
+            display: none;
+            align-items: center;
+            gap: 10px;
+            z-index: 9999;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+        }
+
+
+        .page {
+            max-width: 940px;
+            margin: 0 auto;
+            padding: 0 32px;
+        }
+
+        /* PAGE BREAK RULES FOR PDF */
+        .page-break {
+            page-break-before: always;
+            break-before: page;
+        }
+        .avoid-break {
+            page-break-inside: avoid;
+            break-inside: avoid;
+        }
+
+        /* HERO HEADER */
+        .hero {
+            background: linear-gradient(155deg, #ffffff 0%, #f0f4ff 50%, #fef2f2 100%);
+            border-bottom: 2px solid #e2e8f0;
+            padding: 44px 0 42px;
+            text-align: center;
+            position: relative;
+        }
+        .hero-content { position: relative; z-index: 1; }
+
+        /* TECHNULA BRAND HEADER */
+        .logo-container {
+            margin-bottom: 22px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .technula-logo-img {
+            max-width: 290px;
+            height: auto;
+            object-fit: contain;
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.06));
+        }
+
+        .company-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: #ffffff;
+            border: 1px solid #bfdbfe;
+            box-shadow: var(--shadow-sm);
+            padding: 6px 18px;
+            border-radius: 50px;
+            font-size: 12px;
+            font-weight: 800;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            color: #1d4ed8;
+            margin-bottom: 16px;
+        }
+
+        .hero h1 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 40px;
+            font-weight: 800;
+            color: #0f172a;
+            line-height: 1.18;
+            margin-bottom: 12px;
+            letter-spacing: -0.6px;
+        }
+        .hero h1 span.highlight-text {
+            background: linear-gradient(135deg, #2563eb, #dc2626);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero .subtitle {
+            font-size: 16.5px;
+            color: #475569;
+            max-width: 720px;
+            margin: 0 auto 22px;
+            font-weight: 400;
+            line-height: 1.55;
+        }
+        .hero-meta {
+            display: flex;
+            justify-content: center;
+            gap: 16px;
+            flex-wrap: wrap;
+            font-size: 12.5px;
+            font-weight: 600;
+            color: #2563eb;
+        }
+        .hero-meta span {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 5px 14px;
+            border-radius: 20px;
+            border: 1px solid #dbeafe;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.02);
+        }
+
+        /* SECTIONS */
+        .section {
+            padding: 42px 0;
+            border-bottom: 1px solid var(--border);
+        }
+        .section:last-child { border-bottom: none; }
+        
+        .section-label {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 11px;
+            font-weight: 800;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            color: var(--accent-blue);
+            background: var(--accent-blue-light);
+            padding: 4px 10px;
+            border-radius: 6px;
+            margin-bottom: 10px;
+        }
+        .section-title {
+            font-family: 'Outfit', sans-serif;
+            font-size: 27px;
+            font-weight: 700;
+            color: #0f172a;
+            margin-bottom: 6px;
+            letter-spacing: -0.5px;
+        }
+        .section-desc {
+            font-size: 14.5px;
+            color: var(--text-secondary);
+            max-width: 740px;
+            margin-bottom: 26px;
+            line-height: 1.55;
+        }
+
+        /* STATS */
+        .stats-row {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+            margin: 24px 0;
+        }
+        .stat-card {
+            background: #ffffff;
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow-sm);
+            border-radius: 14px;
+            padding: 20px 14px;
+            text-align: center;
+            transition: transform 0.2s;
+        }
+        .stat-card .number {
+            font-family: 'Outfit', sans-serif;
+            font-size: 34px;
+            font-weight: 800;
+            background: var(--gradient-1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            line-height: 1.1;
+        }
+        .stat-card .label {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text-muted);
+            margin-top: 6px;
+        }
+
+        /* PRICING */
+        .pricing-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 18px;
+            margin-top: 24px;
+        }
+        .pricing-grid-2 {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 18px;
+            max-width: 640px;
+            margin: 22px auto 0;
+        }
+        .price-card {
+            background: #ffffff;
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow-sm);
+            border-radius: 16px;
+            padding: 24px 20px;
+            position: relative;
+            break-inside: avoid;
+            page-break-inside: avoid;
+        }
+        .price-card.featured {
+            border: 2px solid var(--accent-blue);
+            background: #f8faff;
+            box-shadow: var(--shadow-md);
+        }
+        .price-card.featured::before {
+            content: 'MOST POPULAR';
+            position: absolute;
+            top: -11px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: linear-gradient(135deg, #2563eb, #1d4ed8);
+            color: #ffffff;
+            font-size: 9.5px;
+            font-weight: 800;
+            letter-spacing: 0.8px;
+            padding: 3px 12px;
+            border-radius: 20px;
+            box-shadow: var(--shadow-sm);
+        }
+        .price-card.enterprise {
+            border: 2px solid #dc2626;
+            background: #fffafa;
+        }
+        .price-card.enterprise::before {
+            content: 'ALL INCLUSIVE FOR FIRMS';
+            position: absolute;
+            top: -11px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: linear-gradient(135deg, #dc2626, #b91c1c);
+            color: #ffffff;
+            font-size: 9.5px;
+            font-weight: 800;
+            letter-spacing: 0.8px;
+            padding: 3px 12px;
+            border-radius: 20px;
+        }
+        .tier-icon {
+            width: 42px;
+            height: 42px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            margin-bottom: 12px;
+        }
+        .tier-name {
+            font-family: 'Outfit', sans-serif;
+            font-size: 19px;
+            font-weight: 700;
+            color: #0f172a;
+            margin-bottom: 2px;
+        }
+        .tier-desc {
+            font-size: 12px;
+            color: var(--text-muted);
+            margin-bottom: 14px;
+            min-height: 32px;
+        }
+        .price {
+            font-family: 'Outfit', sans-serif;
+            font-size: 38px;
+            font-weight: 800;
+            line-height: 1;
+            color: #0f172a;
+        }
+        .price .currency {
+            font-size: 20px;
+            font-weight: 700;
+            vertical-align: super;
+            margin-right: 2px;
+            color: var(--text-secondary);
+        }
+        .price-unit {
+            font-size: 12px;
+            color: var(--text-muted);
+            margin-bottom: 16px;
+            font-weight: 500;
+        }
+        .features-list {
+            list-style: none;
+            padding: 0;
+            border-top: 1px dashed var(--border);
+            padding-top: 14px;
+        }
+        .features-list li {
+            font-size: 12.5px;
+            color: var(--text-secondary);
+            padding: 4px 0;
+            display: flex;
+            align-items: flex-start;
+            gap: 7px;
+        }
+        .features-list li::before {
+            content: '\2713';
+            color: var(--accent-green);
+            font-weight: 800;
+            flex-shrink: 0;
+            font-size: 13px;
+        }
+        .features-list li.disabled {
+            color: #94a3b8;
+            text-decoration: line-through;
+            opacity: 0.65;
+        }
+        .features-list li.disabled::before {
+            content: '\2014';
+            color: #cbd5e1;
+        }
+
+        /* FEATURE GRID */
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+            margin-top: 24px;
+        }
+        .feature-card {
+            background: #ffffff;
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow-sm);
+            border-radius: 14px;
+            padding: 22px 20px;
+            break-inside: avoid;
+            page-break-inside: avoid;
+        }
+        .feature-card .icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 19px;
+            margin-bottom: 12px;
+        }
+        .feature-card h3 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 16px;
+            font-weight: 700;
+            color: #0f172a;
+            margin-bottom: 6px;
+        }
+        .feature-card p {
+            font-size: 13px;
+            color: var(--text-secondary);
+            line-height: 1.5;
+        }
+        .tag-row { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 10px; }
+        .tag {
+            font-size: 10.5px;
+            font-weight: 600;
+            padding: 2px 8px;
+            border-radius: 12px;
+            background: #eef2ff;
+            color: #4338ca;
+            border: 1px solid #e0e7ff;
+        }
+
+        /* TABLES */
+        .styled-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            border-radius: 10px;
+            overflow: hidden;
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow-sm);
+            break-inside: avoid;
+            page-break-inside: avoid;
+        }
+        .styled-table th {
+            background: #f1f5f9;
+            color: #1e293b;
+            font-size: 11.5px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            padding: 12px 16px;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+        }
+        .styled-table td {
+            padding: 11px 16px;
+            font-size: 13.5px;
+            color: var(--text-secondary);
+            border-top: 1px solid var(--border);
+        }
+        .styled-table tr:nth-child(even) td {
+            background: #f8fafc;
+        }
+        .highlight {
+            color: var(--accent-green);
+            font-weight: 700;
+        }
+        .total-row td {
+            background: #eff6ff !important;
+            font-weight: 700;
+            color: #1e3a8a;
+            font-size: 14px;
+        }
+
+        /* COMPARE TABLE */
+        .compare-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            border-radius: 10px;
+            overflow: hidden;
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow-sm);
+            font-size: 13px;
+            break-inside: avoid;
+            page-break-inside: avoid;
+        }
+        .compare-table th {
+            background: #f8fafc;
+            padding: 12px 14px;
+            font-size: 11.5px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #475569;
+            text-align: center;
+            border-bottom: 1px solid var(--border);
+        }
+        .compare-table th:first-child { text-align: left; }
+        .compare-table th.ours {
+            background: #eff6ff;
+            color: #1d4ed8;
+            font-weight: 800;
+            border-left: 2px solid #bfdbfe;
+            border-right: 2px solid #bfdbfe;
+        }
+        .compare-table td {
+            padding: 10px 14px;
+            text-align: center;
+            border-top: 1px solid var(--border);
+            color: var(--text-secondary);
+        }
+        .compare-table td:first-child {
+            text-align: left;
+            font-weight: 600;
+            color: #0f172a;
+        }
+        .compare-table td.ours-cell {
+            background: #f8faff;
+            font-weight: 600;
+            border-left: 2px solid #bfdbfe;
+            border-right: 2px solid #bfdbfe;
+        }
+        .yes { color: var(--accent-green); font-weight: 700; font-size: 14px; }
+        .no { color: #dc2626; font-size: 13px; }
+        .price-cell { color: #3b82f6; font-weight: 600; }
+
+        /* TIMELINE */
+        .timeline {
+            position: relative;
+            padding-left: 36px;
+            margin-top: 24px;
+            break-inside: avoid;
+            page-break-inside: avoid;
+        }
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 12px;
+            top: 4px;
+            bottom: 4px;
+            width: 3px;
+            background: linear-gradient(180deg, #2563eb 0%, #dc2626 100%);
+            border-radius: 3px;
+        }
+        .timeline-item {
+            position: relative;
+            padding-bottom: 22px;
+            break-inside: avoid;
+        }
+        .timeline-item:last-child { padding-bottom: 0; }
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -29.5px;
+            top: 3px;
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            background: #ffffff;
+            border: 3px solid #2563eb;
+            z-index: 1;
+            box-shadow: var(--shadow-sm);
+        }
+        .timeline-item .day {
+            font-size: 11px;
+            font-weight: 700;
+            color: #2563eb;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 2px;
+        }
+        .timeline-item h4 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 15px;
+            font-weight: 700;
+            color: #0f172a;
+            margin-bottom: 2px;
+        }
+        .timeline-item p {
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+
+        /* WHY GRID */
+        .why-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 14px;
+            margin-top: 24px;
+            break-inside: avoid;
+            page-break-inside: avoid;
+        }
+        .why-card {
+            background: #ffffff;
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow-sm);
+            border-radius: 14px;
+            padding: 18px 16px;
+            text-align: center;
+            break-inside: avoid;
+        }
+        .why-card .emoji { font-size: 26px; margin-bottom: 8px; }
+        .why-card h4 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 14px;
+            font-weight: 700;
+            color: #0f172a;
+            margin-bottom: 4px;
+        }
+        .why-card p {
+            font-size: 12px;
+            color: var(--text-muted);
+            line-height: 1.45;
+        }
+
+        /* CALLOUT */
+        .callout-box {
+            background: linear-gradient(135deg, #eff6ff 0%, #fef2f2 100%);
+            border: 1px solid #bfdbfe;
+            border-radius: 14px;
+            padding: 22px 26px;
+            margin: 24px 0;
+            break-inside: avoid;
+            page-break-inside: avoid;
+        }
+        .callout-box h4 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 16px;
+            font-weight: 700;
+            color: #1e3a8a;
+            margin-bottom: 6px;
+        }
+        .callout-box p {
+            font-size: 13.5px;
+            color: #334155;
+            line-height: 1.5;
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 10.5px;
+            font-weight: 700;
+            padding: 3px 9px;
+            border-radius: 12px;
+            background: #ecfdf5;
+            color: #047857;
+            border: 1px solid #a7f3d0;
+        }
+
+        /* FOOTER */
+        .footer {
+            background: #f8fafc;
+            border-top: 1px solid var(--border);
+            padding: 36px 0 28px;
+            text-align: center;
+            margin-top: 20px;
+            break-inside: avoid;
+            page-break-inside: avoid;
+        }
+        .footer .company-name {
+            font-family: 'Outfit', sans-serif;
+            font-size: 22px;
+            font-weight: 800;
+            color: #1e3a8a;
+            letter-spacing: -0.5px;
+            margin-bottom: 8px;
+        }
+        .contact-grid {
+            display: flex;
+            justify-content: center;
+            gap: 32px;
+            flex-wrap: wrap;
+            margin: 16px 0;
+        }
+        .contact-item {
+            font-size: 13.5px;
+            font-weight: 600;
+            color: #334155;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .divider {
+            height: 1px;
+            background: var(--border);
+            margin: 24px auto;
+            max-width: 600px;
+        }
+
+        @media print {
+            .top-action-bar { display: none !important; }
+            body { background: #ffffff !important; }
+            .hero { padding: 30px 0 24px !important; }
+            .section { padding: 26px 0 !important; }
+        }
+
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 30px; }
+            .stats-row { grid-template-columns: repeat(2, 1fr); }
+            .pricing-grid, .pricing-grid-2 { grid-template-columns: 1fr; }
+            .feature-grid { grid-template-columns: 1fr; }
+            .why-grid { grid-template-columns: 1fr; }
+            .contact-grid { flex-direction: column; gap: 10px; align-items: center; }
+            .top-action-bar { flex-direction: column; gap: 10px; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- TOP ACTION BAR -->
+<div class="top-action-bar">
+    <div class="bar-left">
+        <span class="bar-pill">&#9679; Commercial Proposal</span>
+        <span>TECHNULA &mdash; NoticeRadar SaaS for Chartered Accountants</span>
+    </div>
+    <div class="bar-actions">
+        <button id="downloadPdfBtn" class="btn-action btn-pdf" onclick="generateAndSavePDF()">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+            <span id="pdfBtnText">Download PDF</span>
+        </button>
+        <button id="printBtn" class="btn-action btn-print" onclick="triggerNativePrint()">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9V2h12v7"></path><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>
+            Print
+        </button>
+        <a href="tel:+919990911093" class="btn-action btn-contact">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
+            Talk to Sales
+        </a>
+    </div>
+</div>
+
+<div id="toastMessage" class="toast-msg"></div>
+
+<div id="proposal-content">
+
+<!-- HERO HEADER -->
+<header class="hero">
+    <div class="page hero-content">
+        <!-- TECHNULA LOGO AT TOP -->
+        <div class="logo-container">
+            <img src="technula-logo.png" alt="TECHNULA - Innovate. Integrate. Inspire." class="technula-logo-img">
+        </div>
+        
+        <div class="company-badge">TECHNULA ENTERPRISE SAAS</div>
+        <h1>NoticeRadar &mdash; Intelligent Notice &amp;<br><span class="highlight-text">Tax Compliance Platform</span></h1>
+        <p class="subtitle">Automated Government Portal Sync (ITD &amp; GSTN), AI Notice Summarization, Legal Response Studio &amp; Secure Client Portal &mdash; Built specifically for Indian Chartered Accountants.</p>
+        <div class="hero-meta">
+            <span>Commercial Proposal 2026</span>
+            <span>B2B Multi-Tenant SaaS</span>
+            <span>Made in India for Indian CAs</span>
+            <span>www.technula.com</span>
+        </div>
+    </div>
+</header>
+
+<main class="page">
+
+    <!-- STATS ROW -->
+    <div class="stats-row">
+        <div class="stat-card">
+            <div class="number">85%</div>
+            <div class="label">Time Saved on Notice Reviews</div>
+        </div>
+        <div class="stat-card">
+            <div class="number">100%</div>
+            <div class="label">Zero Missed Tax Deadlines</div>
+        </div>
+        <div class="stat-card">
+            <div class="number">24 / 7</div>
+            <div class="label">Automated Portal Sync</div>
+        </div>
+        <div class="stat-card">
+            <div class="number">&lt; 15s</div>
+            <div class="label">AI Notice Summary &amp; Draft</div>
+        </div>
+    </div>
+
+    <!-- SECTION 1: ABOUT US -->
+    <section class="section">
+        <div class="section-label">ABOUT US &amp; THE CHALLENGE</div>
+        <h2 class="section-title">The Real Challenge Facing Indian CAs</h2>
+        <p class="section-desc">Chartered Accountants in India manage hundreds of active clients. When the Income Tax Department (ITD) or GST Network issues formal scrutiny or demand notices, compliance becomes chaotic. CAs spend countless hours logging into individual portals, chasing clients over WhatsApp/Email for documents, and scrambling to meet statutory deadlines.</p>
+        
+        <div class="callout-box">
+            <h4>TECHNULA Solution &mdash; NoticeRadar</h4>
+            <p><strong>NoticeRadar</strong> bridges this gap completely. It automatically logs into government portals to fetch new notices, utilizes built-in legal AI to analyze complex 10-page notices in seconds, provides a simplified Client Upload Portal, and auto-drafts legally compliant reply letters &mdash; all from a single dashboard.</p>
+        </div>
+    </section>
+
+    <!-- SECTION 2: PLATFORM OVERVIEW -->
+    <section class="section">
+        <div class="section-label">PLATFORM OVERVIEW</div>
+        <h2 class="section-title">What NoticeRadar Delivers</h2>
+        <p class="section-desc">A unified cloud ecosystem designed to automate the entire lifecycle of tax notices, from discovery to resolution.</p>
+        <div class="feature-grid">
+            <div class="feature-card">
+                <div class="icon" style="background:#eff6ff;color:#2563eb;">&#9889;</div>
+                <h3>Automated Portal Sync (RPA)</h3>
+                <p>Background robotic automation securely synchronizes with the Income Tax &amp; GSTN portals nightly, downloading fresh notices and intimations without manual staff logins.</p>
+                <div class="tag-row"><span class="tag">ITD Portal</span><span class="tag">GSTN Portal</span><span class="tag">TRACES</span><span class="tag">Zero Manual Entry</span></div>
+            </div>
+            <div class="feature-card">
+                <div class="icon" style="background:#ecfdf5;color:#059669;">&#128196;</div>
+                <h3>Quick Scan &amp; OCR Engine</h3>
+                <p>Upload physical paper notices or scanned PDFs. The OCR engine automatically extracts DIN/Notice Number, PAN, Assessment Year, and due dates into structured records.</p>
+                <div class="tag-row"><span class="tag">OCR Extraction</span><span class="tag">PDF Parser</span><span class="tag">Auto PAN Match</span></div>
+            </div>
+            <div class="feature-card">
+                <div class="icon" style="background:#f5f3ff;color:#7c3aed;">&#129302;</div>
+                <h3>AI Notice Summarizer</h3>
+                <p>Specialized Indian tax legal intelligence analyzes sections u/s 143(1), 143(2), 148, 142(1), and GST 73/74, delivering 3-bullet summaries, risk ratings, and required checklists in seconds.</p>
+                <div class="tag-row"><span class="tag">Sec 143(1)</span><span class="tag">Sec 148 Reopening</span><span class="tag">GST SCN</span><span class="tag">Risk Scoring</span></div>
+            </div>
+            <div class="feature-card">
+                <div class="icon" style="background:#fffbeb;color:#d97706;">&#9997;&#65039;</div>
+                <h3>AI Legal Response Studio</h3>
+                <p>Rich text editor that drafts polite, legally sound reply submissions citing statutory provisions, precedent references, and attached reconciliation exhibits ready for sign-off.</p>
+                <div class="tag-row"><span class="tag">Auto-Drafting</span><span class="tag">Legal Templates</span><span class="tag">Letterhead Export</span></div>
+            </div>
+            <div class="feature-card">
+                <div class="icon" style="background:#fdf2f8;color:#db2777;">&#128272;</div>
+                <h3>Client Upload Portal</h3>
+                <p>No more messy WhatsApp threads. Clients get a zero-friction, branded portal link to upload Form 16, bank statements, and rent receipts directly to the specific notice vault.</p>
+                <div class="tag-row"><span class="tag">Action Requests</span><span class="tag">Client Portal</span><span class="tag">Encrypted Vault</span></div>
+            </div>
+            <div class="feature-card">
+                <div class="icon" style="background:#ecfeff;color:#0891b2;">&#128197;</div>
+                <h3>Calendar &amp; Multi-Channel Alerts</h3>
+                <p>Visual calendar plotted by strict compliance due dates. Automatic escalation triggers via WhatsApp Cloud API and email alerts before deadlines expire.</p>
+                <div class="tag-row"><span class="tag">WhatsApp API</span><span class="tag">Email Alerts</span><span class="tag">Due Date Tracking</span></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION 3: PRICING PLANS -->
+    <section class="section page-break">
+        <div class="section-label">COMMERCIAL PRICING</div>
+        <h2 class="section-title">Simple, Honest Pricing for Indian CA Firms</h2>
+        <p class="section-desc">Priced fairly for the Indian accounting community. No hidden server costs. No expensive per-seat penalties. Choose the plan that matches your practice size.</p>
+        
+        <div class="pricing-grid">
+            <!-- STARTER -->
+            <div class="price-card">
+                <div class="tier-icon" style="background:#eff6ff;color:#2563eb;">&#128100;</div>
+                <div class="tier-name">Solo CA / Starter</div>
+                <div class="tier-desc">For individual practitioners &amp; boutique tax consultants</div>
+                <div class="price"><span class="currency">&#8377;</span>399</div>
+                <div class="price-unit">per firm / month (billed annually at &#8377;3,999/yr)</div>
+                <ul class="features-list">
+                    <li>Up to 50 Client Profiles</li>
+                    <li>Centralized Notice Inbox</li>
+                    <li>OCR Physical Notice Scanning</li>
+                    <li>Basic AI Notice Summarizer</li>
+                    <li>Interactive Deadline Calendar</li>
+                    <li>Email Alerts to Clients</li>
+                    <li>Standard Email Support</li>
+                    <li class="disabled">Automated RPA Portal Sync</li>
+                    <li class="disabled">WhatsApp Cloud API Alerts</li>
+                    <li class="disabled">Multi-Staff Role Delegation</li>
+                </ul>
+            </div>
+
+            <!-- PRO -->
+            <div class="price-card featured">
+                <div class="tier-icon" style="background:#ecfdf5;color:#059669;">&#9889;</div>
+                <div class="tier-name">Professional CA</div>
+                <div class="tier-desc">For growing firms handling high compliance volume</div>
+                <div class="price"><span class="currency">&#8377;</span>799</div>
+                <div class="price-unit">per firm / month (billed annually at &#8377;7,999/yr)</div>
+                <ul class="features-list">
+                    <li>Up to 250 Client Profiles</li>
+                    <li>Unlimited Notice Processing</li>
+                    <li>Automated ITD &amp; GSTN Portal Sync</li>
+                    <li>Full AI Notice Analysis &amp; Risk Scoring</li>
+                    <li>AI Legal Response Drafting Studio</li>
+                    <li>Dedicated Client Upload Portal</li>
+                    <li>WhatsApp Cloud API Document Requests</li>
+                    <li>Up to 5 Staff User Logins</li>
+                    <li>Forensic Audit Log Trail</li>
+                    <li class="disabled">Custom Firm Subdomain &amp; White-label</li>
+                </ul>
+            </div>
+
+            <!-- COMPLETE BUNDLE -->
+            <div class="price-card">
+                <div class="tier-icon" style="background:#f5f3ff;color:#7c3aed;">&#127970;</div>
+                <div class="tier-name">Firm Complete</div>
+                <div class="tier-desc">Full automation for multi-member CA firms</div>
+                <div class="price"><span class="currency">&#8377;</span>1,299</div>
+                <div class="price-unit">per firm / month (billed annually at &#8377;12,999/yr)</div>
+                <ul class="features-list">
+                    <li>Up to 750 Client Profiles</li>
+                    <li>Everything in Professional Plan</li>
+                    <li>Up to 15 Staff &amp; Article Assistant Logins</li>
+                    <li>Bulk Notice Import &amp; Reconciliations</li>
+                    <li>Priority WhatsApp &amp; Email Dispatcher</li>
+                    <li>MinIO / S3 Document Vault (50 GB Storage)</li>
+                    <li>Firm Letterhead Watermarking on PDFs</li>
+                    <li>Google &amp; Outlook Calendar Two-way Sync</li>
+                    <li>Priority Phone &amp; Desk Support</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="pricing-grid-2">
+            <!-- ENTERPRISE -->
+            <div class="price-card enterprise">
+                <div class="tier-icon" style="background:#fffafa;color:#dc2626;">&#127942;</div>
+                <div class="tier-name">Enterprise / Multi-Partner</div>
+                <div class="tier-desc">For large audit firms &amp; corporate compliance houses</div>
+                <div class="price"><span class="currency">&#8377;</span>1,999</div>
+                <div class="price-unit">per firm / month (billed annually at &#8377;19,999/yr)</div>
+                <ul class="features-list">
+                    <li>Unlimited Client Profiles &amp; Unlimited Notices</li>
+                    <li>Unlimited Partner &amp; Staff Accounts</li>
+                    <li>White-labeled Client Portal (portal.yourfirm.com)</li>
+                    <li>Dedicated Database Isolation &amp; Encrypted Vault</li>
+                    <li>Custom Legal Drafting Prompts &amp; Knowledge Base</li>
+                    <li>Full TRACES, GSTN &amp; ITD Robotic Connectors</li>
+                    <li>Dedicated Account Manager &amp; 1-Hour SLA</li>
+                </ul>
+            </div>
+
+            <!-- ONE-TIME LIFETIME / ON-PREMISE OPTION -->
+            <div class="price-card">
+                <div class="tier-icon" style="background:#fffbeb;color:#d97706;">&#128187;</div>
+                <div class="tier-name">Private Dedicated Setup</div>
+                <div class="tier-desc">For firms requiring self-hosted deployment on own VPS</div>
+                <div class="price"><span class="currency">&#8377;</span>24,999</div>
+                <div class="price-unit">One-time Deployment + Annual Maintenance</div>
+                <ul class="features-list">
+                    <li>Deployed directly on your own Hostinger / Cloud VPS</li>
+                    <li>Complete source configuration &amp; Docker orchestration</li>
+                    <li>100% Data sovereignty &mdash; zero external servers</li>
+                    <li>Unlimited internal users &amp; clients</li>
+                    <li>1 Year of free version updates &amp; security patches</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="callout-box">
+            <h4>Annual Subscription &mdash; Get 2 Months FREE</h4>
+            <p>Subscribe annually to any plan and pay for only 10 months. The <strong>one-time setup fee of &#8377;5,000</strong> (covering firm onboarding, portal setup &amp; full client database migration) is <strong>100% WAIVED</strong> on all annual contracts.</p>
+        </div>
+    </section>
+
+    <!-- SECTION 4: EXAMPLE PRICING & ROI -->
+    <section class="section">
+        <div class="section-label">FINANCIAL ROI PROJECTION</div>
+        <h2 class="section-title">What Is the Real Return on Investment?</h2>
+        <p class="section-desc">A typical CA firm spends 15&ndash;25 staff hours per month chasing notices, downloading files, and typing standard replies. At ₹400/hour staff cost, manual handling costs you ₹8,000+ per month in wasted billable time.</p>
+        
+        <table class="styled-table">
+            <thead>
+                <tr>
+                    <th>Practice Size</th>
+                    <th>Recommended Plan</th>
+                    <th>Monthly Fee</th>
+                    <th>Annual Investment (2 Mos FREE)</th>
+                    <th>Estimated Hours Saved / Year</th>
+                    <th>Net Firm Savings / Year</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>Solo CA (1 Partner)</strong></td>
+                    <td>Starter</td>
+                    <td>&#8377;399</td>
+                    <td class="highlight">&#8377;3,999</td>
+                    <td>120 Hours</td>
+                    <td><strong>&#8377;45,000+</strong></td>
+                </tr>
+                <tr>
+                    <td><strong>Mid-sized Firm (3-5 Staff)</strong></td>
+                    <td>Professional</td>
+                    <td>&#8377;799</td>
+                    <td class="highlight">&#8377;7,999</td>
+                    <td>280 Hours</td>
+                    <td><strong>&#8377;1,10,000+</strong></td>
+                </tr>
+                <tr>
+                    <td><strong>Large Practice (10+ Staff)</strong></td>
+                    <td>Firm Complete</td>
+                    <td>&#8377;1,299</td>
+                    <td class="highlight">&#8377;12,999</td>
+                    <td>550 Hours</td>
+                    <td><strong>&#8377;2,40,000+</strong></td>
+                </tr>
+                <tr class="total-row">
+                    <td><strong>Multi-Branch Firm (25+ Staff)</strong></td>
+                    <td>Enterprise</td>
+                    <td>&#8377;1,999</td>
+                    <td class="highlight">&#8377;19,999</td>
+                    <td>1,200+ Hours</td>
+                    <td><strong>&#8377;5,00,000+</strong></td>
+                </tr>
+            </tbody>
+        </table>
+        <p style="font-size:12px;color:var(--text-muted);margin-top:6px;">* Calculated at conservative median billable rate of ₹350&ndash;₹450/hr for junior staff/article assistants.</p>
+    </section>
+
+    <!-- SECTION 5: HOW WE COMPARE -->
+    <section class="section page-break">
+        <div class="section-label">MARKET COMPARISON</div>
+        <h2 class="section-title">How NoticeRadar Compares to Legacy Tools</h2>
+        <p class="section-desc">Most existing tax software in India focuses solely on return filing, ignoring the massive operational nightmare of managing post-filing intimations and scrutiny notices.</p>
+        
+        <table class="compare-table">
+            <thead>
+                <tr>
+                    <th>Feature / Capability</th>
+                    <th>ClearTax</th>
+                    <th>Winman / Computax</th>
+                    <th>Generic Email / Excel</th>
+                    <th class="ours">NoticeRadar (TECHNULA)</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr><td>Automated ITD Portal Scrape</td><td class="no">&#10007;</td><td class="no">&#10007;</td><td class="no">&#10007;</td><td class="ours-cell yes">&#10003; (Nightly Robotic Sync)</td></tr>
+                <tr><td>AI Notice Summarization</td><td class="no">&#10007;</td><td class="no">&#10007;</td><td class="no">&#10007;</td><td class="ours-cell yes">&#10003; (&lt; 15s Legal Insights)</td></tr>
+                <tr><td>AI Response Drafting Studio</td><td class="no">&#10007;</td><td class="no">&#10007;</td><td class="no">&#10007;</td><td class="ours-cell yes">&#10003; (Auto-drafts Reply)</td></tr>
+                <tr><td>Physical Notice OCR Scanner</td><td class="no">&#10007;</td><td class="no">&#10007;</td><td class="no">&#10007;</td><td class="ours-cell yes">&#10003; (PDF / Image Parser)</td></tr>
+                <tr><td>Client Upload Portal</td><td class="no">&#10007;</td><td class="no">&#10007;</td><td class="no">&#10007;</td><td class="ours-cell yes">&#10003; (Zero-Password Link)</td></tr>
+                <tr><td>WhatsApp Document Requests</td><td class="no">&#10007;</td><td class="no">&#10007;</td><td class="no">&#10007;</td><td class="ours-cell yes">&#10003; (Meta Cloud API)</td></tr>
+                <tr><td>Forensic Audit Trail (IP &amp; Logs)</td><td class="no">&#10007;</td><td class="no">&#10007;</td><td class="no">&#10007;</td><td class="ours-cell yes">&#10003; (Immutable Logging)</td></tr>
+                <tr><td>Multi-User Staff Delegation</td><td class="yes">&#10003; (Add-on)</td><td class="no">&#10007; (Desktop Locked)</td><td class="no">&#10007;</td><td class="ours-cell yes">&#10003; (RBAC Built-in)</td></tr>
+                <tr style="background:#eff6ff;">
+                    <td><strong>Typical Annual Cost</strong></td>
+                    <td class="price-cell">&#8377;18,000&ndash;&#8377;35,000/yr</td>
+                    <td class="price-cell">&#8377;12,000&ndash;&#8377;22,000/yr</td>
+                    <td class="price-cell">&#8377;0 (Hours Wasted)</td>
+                    <td class="ours-cell" style="color:var(--accent-green);font-size:14px;"><strong>From &#8377;7,999/yr</strong></td>
+                </tr>
+            </tbody>
+        </table>
+    </section>
+
+    <!-- SECTION 6: PLATFORM DELIVERY -->
+    <section class="section">
+        <div class="section-label">WHAT YOU GET</div>
+        <h2 class="section-title">Complete Platform Delivery</h2>
+        <p class="section-desc">Every active subscription includes full access to our complete, interconnected software stack.</p>
+        <table class="styled-table">
+            <thead>
+                <tr>
+                    <th>Component</th>
+                    <th>Description</th>
+                    <th>Access Method</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr><td><strong>CA Web Command Center</strong></td><td>Comprehensive 25+ screen application &mdash; Notice inbox, calendar, drawer, client CRM &amp; analytics</td><td><span class="badge">Web Browser (Any Device)</span></td></tr>
+                <tr><td><strong>AI Response Studio</strong></td><td>Rich text legal drafting studio with Indian Income Tax &amp; GST precedent references</td><td><span class="badge">Integrated Cloud Tool</span></td></tr>
+                <tr><td><strong>Client Upload Portal</strong></td><td>Streamlined interface for tax clients to submit requested evidence, bank statements &amp; Form 16</td><td><span class="badge">Mobile &amp; Web Link</span></td></tr>
+                <tr><td><strong>Automated Sync Daemon</strong></td><td>Robotic automation engine polling ITD, GSTN &amp; TRACES for newly issued notices</td><td><span class="badge">Automated Background</span></td></tr>
+                <tr><td><strong>Encrypted Document Vault</strong></td><td>Bank-grade AES-256 document repository isolating sensitive client financial records</td><td><span class="badge">MinIO / S3 Storage</span></td></tr>
+                <tr><td><strong>Notification Dispatcher</strong></td><td>Multi-channel notification bridge triggering WhatsApp and SMTP alerts to clients and staff</td><td><span class="badge">Meta API / AWS SES</span></td></tr>
+            </tbody>
+        </table>
+    </section>
+
+    <!-- SECTION 7: IMPLEMENTATION TIMELINE -->
+    <section class="section page-break">
+        <div class="section-label">IMPLEMENTATION</div>
+        <h2 class="section-title">Go Live in 5 Days</h2>
+        <p class="section-desc">Our fast-track onboarding ensures your CA firm transitions from messy manual tracking to automated peace of mind within one business week.</p>
+        <div class="timeline">
+            <div class="timeline-item">
+                <div class="day">Day 1</div>
+                <h4>Firm Registration &amp; Vault Initialization</h4>
+                <p>Register your CA firm profile, configure letterhead branding, primary partner accounts, and initialize encrypted document storage.</p>
+            </div>
+            <div class="timeline-item">
+                <div class="day">Day 2</div>
+                <h4>Client Database Import</h4>
+                <p>Bulk import existing client rosters via our pre-formatted Excel/CSV template (PAN, Client Names, Portal credentials, mobile numbers).</p>
+            </div>
+            <div class="timeline-item">
+                <div class="day">Day 3</div>
+                <h4>Portal Credentials &amp; WhatsApp Integration</h4>
+                <p>Securely link ITD &amp; GSTN portal access credentials with AES-256 encryption. Test WhatsApp Cloud notification templates.</p>
+            </div>
+            <div class="timeline-item">
+                <div class="day">Day 4</div>
+                <h4>Staff Roles &amp; Notice Backlog Scan</h4>
+                <p>Invite partner CAs and article assistants. Run the Quick Scan OCR engine on pending physical notices to clear current backlog.</p>
+            </div>
+            <div class="timeline-item">
+                <div class="day">Day 5</div>
+                <h4>Staff Training &amp; Official Go-Live</h4>
+                <p>Conduct a 45-minute live screen walkthrough for your office staff. Switch completely to NoticeRadar for all incoming compliance.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION 8: COMMERCIAL SUMMARY -->
+    <section class="section page-break">
+        <div class="section-label">COMMERCIAL SUMMARY</div>
+        <h2 class="section-title">Commercial Terms &amp; Quick Reference</h2>
+        <table class="styled-table">
+            <thead>
+                <tr>
+                    <th style="width:40%;">Commercial Term</th>
+                    <th>Specification</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr><td><strong>Solo CA / Starter Plan</strong></td><td>&#8377;399 / firm / month (Billed annually at &#8377;3,999/yr)</td></tr>
+                <tr><td><strong>Professional CA Plan (Most Popular)</strong></td><td>&#8377;799 / firm / month (Billed annually at &#8377;7,999/yr)</td></tr>
+                <tr><td><strong>Firm Complete Plan</strong></td><td>&#8377;1,299 / firm / month (Billed annually at &#8377;12,999/yr)</td></tr>
+                <tr><td><strong>Enterprise Multi-Partner Plan</strong></td><td>&#8377;1,999 / firm / month (Billed annually at &#8377;19,999/yr)</td></tr>
+                <tr><td colspan="2" style="height:6px;padding:0;background:#e2e8f0;"></td></tr>
+                <tr><td><strong>One-time Setup &amp; Onboarding Fee</strong></td><td><strong>&#8377;5,000</strong> (100% Waived on Annual Subscriptions)</td></tr>
+                <tr><td>Trial Period</td><td>14 Days &mdash; Complete access for firm &amp; staff</td></tr>
+                <tr><td>Deployment Options</td><td>Cloud SaaS or Self-Hosted Private VPS (Optional)</td></tr>
+                <tr><td>Customer Support</td><td>Phone, WhatsApp &amp; Email support included in all plans</td></tr>
+                <tr><td>Onboarding Support</td><td>5-Day structured implementation &amp; Excel client import</td></tr>
+                <tr><td>Contract Flexibility</td><td>Month-to-month flexibility or annual rate guarantee (2 Months Free)</td></tr>
+                <tr><td>Statutory Taxes</td><td>GST applicable at 18% with full Input Tax Credit (ITC) invoicing</td></tr>
+            </tbody>
+        </table>
+
+        <div class="callout-box" style="margin-top:28px;">
+            <h4>Risk-Free 14-Day Pilot Trial</h4>
+            <p>Deploy NoticeRadar in your CA firm for 14 days with zero upfront payment. Load up to 25 real clients, test the automatic portal sync, and experience the AI Legal Response Studio before making any commercial commitment.</p>
+        </div>
+    </section>
+
+</main>
+
+<!-- FOOTER -->
+<footer class="footer">
+    <div class="page">
+        <div class="company-name">TECHNULA</div>
+        <p style="color:var(--text-secondary);font-size:14px;margin-bottom:6px;font-weight:600;">Innovate. Integrate. Inspire.</p>
+        <p style="color:var(--text-muted);font-size:13px;margin-bottom:12px;">Next-Generation Technology &amp; Enterprise Compliance Platforms</p>
+        <div class="contact-grid">
+            <div class="contact-item">&#128222; +91-9990911093</div>
+            <div class="contact-item">&#9993;&#65039; sales@technula.com</div>
+            <div class="contact-item">&#127760; www.technula.com</div>
+        </div>
+        <p style="color:var(--text-muted);font-size:12.5px;">S20, First Floor, Amolik Sankalp, Sector-85, Faridabad, Haryana</p>
+        <div class="divider"></div>
+        <p style="font-size:12.5px;color:var(--text-muted);font-style:italic;">"Empowering Indian Chartered Accountants with cutting-edge compliance automation."</p>
+        <p style="color:#94a3b8;font-size:11.5px;margin-top:12px;">&copy; 2026 TECHNULA. All rights reserved. Confidential commercial proposal.</p>
+    </div>
+</footer>
+</div><!-- /proposal-content -->
+
+<script>
+function showToast(message, duration = 3500) {
+    const toast = document.getElementById('toastMessage');
+    if (!toast) return;
+    toast.innerHTML = message;
+    toast.style.display = 'flex';
+    setTimeout(() => {
+        toast.style.display = 'none';
+    }, duration);
+}
+
+function triggerNativePrint() {
+    showToast("Opening Print dialog... (Or press Ctrl+P)");
+    try {
+        window.print();
+    } catch (e) {
+        console.warn("Native print blocked or unsupported, downloading PDF instead:", e);
+        generateAndSavePDF();
+    }
+}
+
+async function generateAndSavePDF() {
+    const btn = document.getElementById('downloadPdfBtn');
+    const btnText = document.getElementById('pdfBtnText');
+    const originalText = btnText ? btnText.innerText : "Download PDF";
+    
+    if (btn) btn.disabled = true;
+    if (btnText) btnText.innerText = "Building PDF...";
+    showToast("⏳ Compiling your A4 PDF proposal... Please wait a few seconds.");
+
+    const element = document.getElementById('proposal-content') || document.body;
+
+    const opt = {
+        margin: [8, 6, 8, 6],
+        filename: 'NoticeRadar_TECHNULA_Commercial_Proposal.pdf',
+        image: { type: 'jpeg', quality: 0.98 },
+        html2canvas: { scale: 2, useCORS: true, logging: false },
+        jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
+        pagebreak: { mode: ['css', 'legacy'] }
+    };
+
+    try {
+        if (typeof html2pdf !== 'undefined') {
+            await html2pdf().set(opt).from(element).save();
+            if (btnText) btnText.innerText = "✓ Downloaded!";
+            showToast("✓ Proposal PDF downloaded successfully!");
+        } else {
+            window.print();
+            if (btnText) btnText.innerText = "Print Opened";
+        }
+    } catch (error) {
+        console.error("PDF generation failed:", error);
+        showToast("Opening system print dialog...");
+        window.print();
+        if (btnText) btnText.innerText = "Print Opened";
+    } finally {
+        setTimeout(() => {
+            if (btnText) btnText.innerText = originalText;
+            if (btn) btn.disabled = false;
+        }, 3000);
+    }
+}
+</script>
+
+</body>
+</html>
